@@ -1,0 +1,192 @@
+{
+  "entities": {
+    "MechanicalPMItem": {
+      "title": "MechanicalPMItem",
+      "description": "Plant mechanical preventative maintenance routine item",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "description": "Unique numeric identifier of the PM routine"
+        },
+        "domain": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Plant system domain such as Civil Piping, Furnace PCP, 2F CE, etc."
+        },
+        "sheet": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Originating master schedule sheet"
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Maintenance category"
+        },
+        "pm_no": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "PM routine code / number"
+        },
+        "location": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Physical plant location"
+        },
+        "section": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Plant section or line"
+        },
+        "machine": {
+          "type": "string",
+          "maxLength": 256,
+          "description": "Machine description and tag"
+        },
+        "pic": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Person in charge / technician"
+        },
+        "engineer": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Supervising plant engineer"
+        },
+        "check_sheet": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Associated inspection check sheet"
+        },
+        "frequency": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Routine frequency e.g. 1W, 2W, 1M, 3M, 6M, 1Y"
+        },
+        "scheduled_weeks": {
+          "type": "array",
+          "description": "List of calendar weeks 1-52 when the PM is scheduled"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of last update"
+        },
+        "updatedBy": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "UID or email of user who last modified the routine"
+        }
+      },
+      "required": ["id", "domain", "pm_no", "machine", "pic", "engineer", "frequency"]
+    },
+    "ExecutionRecord": {
+      "title": "ExecutionRecord",
+      "description": "Execution status record for a specific PM routine and calendar week",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Composite key: itemId_wWeekNumber"
+        },
+        "itemId": {
+          "type": "number",
+          "description": "Associated PM item ID"
+        },
+        "weekNumber": {
+          "type": "number",
+          "description": "Calendar week number (1-52)"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["scheduled", "completed", "in_progress", "deferred"],
+          "description": "Current execution state"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Technician execution note or observation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of status update"
+        },
+        "updatedBy": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "User identifier who performed the status update"
+        }
+      },
+      "required": ["id", "itemId", "weekNumber", "status"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile in plant maintenance system",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Firebase Auth User ID"
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 128,
+          "format": "email",
+          "description": "User email address"
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "User display name"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["engineer", "pic", "viewer", "admin"],
+          "description": "Assigned plant role"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account registration timestamp"
+        }
+      },
+      "required": ["uid", "email"]
+    },
+    "TestConnection": {
+      "title": "TestConnection",
+      "description": "Connection test probe document",
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Connection status string"
+        }
+      },
+      "required": ["status"]
+    }
+  },
+  "firestore": {
+    "/pm_items/{itemId}": {
+      "schema": "MechanicalPMItem",
+      "description": "Master list of mechanical PM routine items"
+    },
+    "/execution_records/{recordId}": {
+      "schema": "ExecutionRecord",
+      "description": "Weekly PM execution records and status flags"
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Plant maintenance application user profiles"
+    },
+    "/test/{testId}": {
+      "schema": "TestConnection",
+      "description": "Health check connection document"
+    }
+  }
+}

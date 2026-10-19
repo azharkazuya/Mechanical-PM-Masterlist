@@ -1,0 +1,6 @@
+{
+  "name": "Mechanical PM Masterlist & Schedule Dashboard (2026)",
+  "description": "Master mechanical preventative maintenance (PM) schedule, 52-week Gantt matrix, weekly planner, and PIC roster for plant operations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
